@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 从外部配置文件加载环境变量
-CONFIG_FILE="/path/to/config/config.env"
+CONFIG_FILE="/config/config.env"
 if [ -f $CONFIG_FILE ]; then
     source $CONFIG_FILE
 else
