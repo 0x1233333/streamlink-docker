@@ -6,15 +6,8 @@ RUN apt-get update && apt-get install -y \
     jq \
     python3 \
     python3-pip \
-    git \
     ffmpeg \
     && apt-get clean
-
-# 设置国内 pip 镜像源（可选）
-RUN pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple/
-
-# 安装 pip 相关工具
-RUN pip3 install --upgrade pip setuptools wheel
 
 # 安装 streamlink 和 yt-dlp
 RUN pip3 install streamlink yt-dlp
