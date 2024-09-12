@@ -16,5 +16,8 @@ COPY script.sh /usr/local/bin/script.sh
 # 确保脚本有执行权限
 RUN chmod +x /usr/local/bin/script.sh
 
+# 确认脚本已复制
+RUN ls -l /usr/local/bin/
+
 # 运行脚本
-CMD ["/usr/local/bin/script.sh"]
+ENTRYPOINT ["/usr/local/bin/script.sh"]
