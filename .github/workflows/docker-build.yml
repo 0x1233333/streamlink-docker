@@ -3,39 +3,35 @@ name: Docker Image CI
 on:
   push:
     branches:
-      - main  # 监听主分支的变化
+      - main
   pull_request:
     branches:
-      - main  # 在创建 PR 时触发构建
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    # 检出代码
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # 设置 Docker Buildx 环境，用于构建多平台 Docker 镜像（可选）
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    # 登录 Docker Hub
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}  # Docker Hub 用户名
-        password: ${{ secrets.DOCKER_PASSWORD }}  # Docker Hub 密码
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # 构建 Docker 镜像
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
-        context: .  # 构建上下文，当前目录
-        push: true  # 构建后推送镜像到 Docker Hub
-        tags: ${{ secrets.DOCKER_USERNAME }}/youtube-stream-checker:latest  # 镜像名称和标签
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/youtube-stream-checker:latest
 
-    # 测试构建的镜像（可选）
     - name: Run container for testing
-      run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/youtube-stream-checker:latest echo "Container is running"
+      run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/youtube-stream-checker:latest \
+        ${{ secrets.API_KEY }} ${{ secrets.CHANNEL_ID }} echo "Container is running"
