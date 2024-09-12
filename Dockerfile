@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-# 更新包管理器并安装依赖项
+# 安装必需的软件
 RUN apt-get update && apt-get install -y \
     curl \
     jq \
@@ -18,16 +18,6 @@ COPY script.sh /usr/local/bin/script.sh
 
 # 确保脚本有执行权限
 RUN chmod +x /usr/local/bin/script.sh
-
-# 环境变量
-ENV PORT=6000 \
-    QUALITY="best" \
-    RETRY_OPEN=30 \
-    RETRY_MAX=0 \
-    SEGMENT_TIMEOUT=600 \
-    STREAM_TIMEOUT=900 \
-    BUFFER_SIZE="64M" \
-    CHECK_INTERVAL=60
 
 # 运行脚本
 CMD ["/usr/local/bin/script.sh"]
