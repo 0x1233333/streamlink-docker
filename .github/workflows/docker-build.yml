@@ -33,5 +33,7 @@ jobs:
         tags: ${{ secrets.DOCKER_USERNAME }}/youtube-stream-checker:latest
 
     - name: Run container for testing
-      run: docker run --rm ${{ secrets.DOCKER_USERNAME }}/youtube-stream-checker:latest \
+      run: docker run --rm \
+        -v /path/to/config.env:/config/config.env \
+        ${{ secrets.DOCKER_USERNAME }}/youtube-stream-checker:latest \
         ${{ secrets.API_KEY }} ${{ secrets.CHANNEL_ID }} echo "Container is running"
