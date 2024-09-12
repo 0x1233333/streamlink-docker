@@ -1,31 +1,42 @@
 #!/bin/bash
 
-# 从外部配置文件加载环境变量
-if [ -f config/config.env ]; then
-    source /config/config.env
-else
-    echo "Error: Config file not found!"
-    exit 1
-fi
+# 配置 PATH 环境变量
+export PATH=$PATH:/root/.local/bin
+
+# 读取配置文件
+source <(grep = config.ini | sed 's/ *= */=/g')
+
+# 配置
+API_KEY=${API_KEY:-123456789}
+CHANNEL_ID=${CHANNEL_ID:-UCrBrSyQaXOoPLICAzS69O3A}
+COOKIES_FILE=${COOKIES_FILE:-"/vol1/1000/streamlink/cookies/cookies.txt"}
+PORT=${PORT:-6000}
+QUALITY=${QUALITY:-"best"}
+RETRY_OPEN=${RETRY_OPEN:-30}
+RETRY_MAX=${RETRY_MAX:-0}
+SEGMENT_TIMEOUT=${SEGMENT_TIMEOUT:-600}
+STREAM_TIMEOUT=${STREAM_TIMEOUT:-900}
+BUFFER_SIZE=${BUFFER_SIZE:-"64M"}
+CHECK_INTERVAL=${CHECK_INTERVAL:-60}
 
 while true; do
-    echo "Checking for live stream..."
+    echo "检查直播流..."
     API_RESPONSE=$(curl -s "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=$CHANNEL_ID&eventType=live&type=video&key=$API_KEY")
     VIDEO_ID=$(echo "$API_RESPONSE" | jq -r '.items[0].id.videoId')
 
     if [[ -z $VIDEO_ID || $VIDEO_ID == "null" ]]; then
-        echo "No live stream detected. Checking again in $CHECK_INTERVAL seconds..."
+        echo "未检测到直播流。将在 $CHECK_INTERVAL 秒后再次检查..."
     else
         LIVE_URL="https://www.youtube.com/watch?v=$VIDEO_ID"
-        echo "Live stream detected: $LIVE_URL"
+        echo "检测到直播流：$LIVE_URL"
 
-        echo "Extracting stream URL using yt-dlp..."
+        echo "使用 yt-dlp 提取流 URL..."
         STREAM_URL=$(yt-dlp -g --cookies "$COOKIES_FILE" "$LIVE_URL")
 
         if [[ -z $STREAM_URL ]]; then
-            echo "Failed to extract stream URL. Retrying in $CHECK_INTERVAL seconds..."
+            echo "提取流 URL 失败。将在 $CHECK_INTERVAL 秒后重试..."
         else
-            echo "Starting streamlink..."
+            echo "启动 streamlink..."
             streamlink "$STREAM_URL" "$QUALITY" \
                 --player-external-http \
                 --player-external-http-port $PORT \
@@ -36,7 +47,7 @@ while true; do
                 --ringbuffer-size $BUFFER_SIZE
         fi
 
-        echo "Streamlink stopped. Restarting check in $CHECK_INTERVAL seconds..."
+        echo "Streamlink 已停止。将在 $CHECK_INTERVAL 秒后重新开始检查..."
     fi
 
     sleep $CHECK_INTERVAL
