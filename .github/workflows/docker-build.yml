@@ -34,6 +34,6 @@ jobs:
 
     - name: Run container for testing
       run: docker run --rm \
-        -v /path/to/config.env:/config/config.env \
+        -v /config/config.env:/config/config.env \
         ${{ secrets.DOCKER_USERNAME }}/youtube-stream-checker:latest \
         echo "Container is running"
