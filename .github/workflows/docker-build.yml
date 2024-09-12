@@ -1,26 +1,15 @@
-FROM python:3.9-slim
-
-# 安装必要的依赖
-RUN apt-get update && apt-get install -y \
-    curl \
-    jq \
-    && rm -rf /var/lib/apt/lists/*
-
-# 安装 streamlink 和 yt-dlp
-RUN pip install --no-cache-dir streamlink yt-dlp
-
-# 设置工作目录
-WORKDIR /app
-
-# 复制脚本和配置文件到容器中
-COPY script.sh /app/
-COPY config.ini /app/
-
-# 设置执行权限
-RUN chmod +x /app/script.sh
-
-# 设置环境变量
-ENV PATH=$PATH:/root/.local/bin
-
-# 运行脚本
-CMD ["/bin/bash", "/app/script.sh"]
+    - name: 部署到服务器
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/streamlink:latest
+          docker stop streamlink-container || true
+          docker rm streamlink-container || true
+          docker run -d --name streamlink-container \
+            -v /path/to/config.ini:/app/config.ini \
+            -v /path/to/cookies:/app/cookies \
+            -p 6000:6000 \
+            ${{ secrets.DOCKER_HUB_USERNAME }}/streamlink:latest
