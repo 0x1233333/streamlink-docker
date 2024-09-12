@@ -1,16 +1,12 @@
 #!/bin/bash
 
-API_KEY=$1
-CHANNEL_ID=$2
-COOKIES_FILE=${COOKIES_FILE}
-PORT=${PORT}
-QUALITY=${QUALITY}
-RETRY_OPEN=${RETRY_OPEN}
-RETRY_MAX=${RETRY_MAX}
-SEGMENT_TIMEOUT=${SEGMENT_TIMEOUT}
-STREAM_TIMEOUT=${STREAM_TIMEOUT}
-BUFFER_SIZE=${BUFFER_SIZE}
-CHECK_INTERVAL=${CHECK_INTERVAL}
+# 从外部配置文件加载环境变量
+if [ -f /app/config.env ]; then
+    source /app/config.env
+else
+    echo "Error: Config file not found!"
+    exit 1
+fi
 
 while true; do
     echo "Checking for live stream..."
