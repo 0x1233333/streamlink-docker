@@ -1,16 +1,16 @@
 FROM ubuntu:latest
 
-# 安装必需的软件
+# 更新包管理器并安装依赖项
 RUN apt-get update && apt-get install -y \
     curl \
     jq \
-    yt-dlp \
-    streamlink \
     python3 \
     python3-pip \
+    git \
     && apt-get clean
 
-# 安装 Streamlink 和 yt-dlp
+# 安装 streamlink 和 yt-dlp
+RUN pip3 install --upgrade pip
 RUN pip3 install streamlink yt-dlp
 
 # 复制脚本到容器中
@@ -20,10 +20,7 @@ COPY script.sh /usr/local/bin/script.sh
 RUN chmod +x /usr/local/bin/script.sh
 
 # 环境变量
-ENV API_KEY=你的APIKEY \
-    CHANNEL_ID=你的频道ID \
-    COOKIES_FILE=/root/cookies.txt \
-    PORT=6000 \
+ENV PORT=6000 \
     QUALITY="best" \
     RETRY_OPEN=30 \
     RETRY_MAX=0 \
