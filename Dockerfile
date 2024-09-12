@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 # 安装 streamlink 和 yt-dlp
-RUN pip install streamlink yt-dlp
+RUN pip3 install streamlink yt-dlp
 
 # 复制脚本到容器中
 COPY script.sh /usr/local/bin/script.sh
