@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 从外部配置文件加载环境变量
-if [ -f /app/config.env ]; then
+if [ -f config/config.env ]; then
     source /app/config.env
 else
     echo "Error: Config file not found!"
