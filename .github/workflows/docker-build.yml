@@ -36,4 +36,4 @@ jobs:
       run: docker run --rm \
         -v /path/to/config.env:/config/config.env \
         ${{ secrets.DOCKER_USERNAME }}/youtube-stream-checker:latest \
-        ${{ secrets.API_KEY }} ${{ secrets.CHANNEL_ID }} echo "Container is running"
+        echo "Container is running"
